@@ -12,7 +12,7 @@ const Error404 = () => {
                                 to="/dashboard"
                                 className="flex ml-2 md:mr-24"
                             >
-                                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+                                <span className="self-center text-xl font-bold sm:text-2xl whitespace-nowrap text-blue-600 dark:text-white">
                                     TRAFFIC CONTROL
                                 </span>
                             </Link>

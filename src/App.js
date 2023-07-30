@@ -7,6 +7,7 @@ import Error404 from './views/404/Error404'
 // pages
 const Login = React.lazy(() => import('./views/auth/Login'))
 const Dashboard = React.lazy(() => import('./views/home/Home'))
+const RoadRoute = React.lazy(() => import('./views/Route/Route'))
 const Register = React.lazy(() => import('./views/auth/Register'))
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
                     <Route path="/" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/routes" element={<RoadRoute />} />
                     <Route path="*" element={<Error404 />} />
                 </Routes>
             </Suspense>
