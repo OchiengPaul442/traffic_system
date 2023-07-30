@@ -4,7 +4,7 @@ import { KeyIcon, LockIcon } from '../../components'
 
 const Register = () => {
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center h-screen bg-slate-200">
             <div className="w-full mx-1 my-5">
                 <form className="lg:max-w-xl bg-gray-50 rounded-lg shadow-md border-2 border-gray-300 mx-auto">
                     <div

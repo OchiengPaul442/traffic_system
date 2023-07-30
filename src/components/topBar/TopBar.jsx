@@ -92,13 +92,13 @@ const TopBar = ({ setIsSideBarOpen, value }) => {
                                     sx={{ justifyContent: 'center' }}
                                     onClick={handleClose}
                                 >
-                                    Profile
+                                    <Link to="/profile">Profile</Link>
                                 </MenuItem>
                                 <MenuItem
                                     sx={{ justifyContent: 'center' }}
                                     onClick={handleClose}
                                 >
-                                    Logout
+                                    <Link to="/">Logout</Link>
                                 </MenuItem>
                             </Menu>
                         </div>

@@ -7,7 +7,7 @@ const Page = ({ children }) => {
         <>
             <TopBar setIsSideBarOpen={setIsSideBarOpen} value={isSideBarOpen} />
             <SideBar isSideBarOpen={isSideBarOpen} />
-            <div className="p-2 sm:ml-64">
+            <div className="p-2 sm:ml-64 h-screen bg-slate-100">
                 <div className="mt-14">{children}</div>
             </div>
         </>
