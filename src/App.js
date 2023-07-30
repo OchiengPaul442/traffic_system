@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
+import React, { Suspense } from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { Loader } from './components/'
+import Error404 from './views/404/Error404'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// pages
+const Login = React.lazy(() => import('./views/auth/Login'))
+const Dashboard = React.lazy(() => import('./views/home/Home'))
+const Register = React.lazy(() => import('./views/auth/Register'))
+
+const App = () => {
+    return (
+        <Router>
+            <Suspense
+                fallback={
+                    <div className="flex justify-center items-center h-screen">
+                        <Loader width="50" height="50" fill={'blue'} />
+                    </div>
+                }
+            >
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="*" element={<Error404 />} />
+                </Routes>
+            </Suspense>
+        </Router>
+    )
 }
 
-export default App;
+export default App
