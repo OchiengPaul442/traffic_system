@@ -4,7 +4,7 @@ import { PenIcon, KeyIcon, LockIcon } from '../../components'
 
 const Login = () => {
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center h-screen bg-slate-200">
             <div className="w-full mx-1">
                 <form className="lg:max-w-md bg-gray-50 rounded-lg shadow-md border-2 border-gray-300 mx-auto">
                     <div
