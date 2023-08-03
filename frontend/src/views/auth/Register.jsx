@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { KeyIcon, LockIcon } from '../../components'
+import { KeyIcon, LockIcon, Loader } from '../../components'
 import Axios from 'axios'
 
 const Register = () => {
@@ -47,11 +47,11 @@ const Register = () => {
             if (data.status === 200) {
                 setTimeout(() => {
                     window.location.href = '/dashboard'
-                }, 1500)
+                    setLoading(false)
+                }, 1200)
             }
 
             setMessage(data.message)
-            setLoading(false)
         } catch (error) {
             setError(error.response.data.message)
             setLoading(false)
@@ -200,7 +200,13 @@ const Register = () => {
                                 type="submit"
                                 className="text-white flex justify-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto m-1 px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                             >
-                                <span>Register</span>
+                                {loading ? (
+                                    <div className="pl-2">
+                                        <Loader fill={'red'} />
+                                    </div>
+                                ) : (
+                                    <span>Register</span>
+                                )}
                             </button>
                             <Link
                                 to="/"

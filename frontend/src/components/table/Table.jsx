@@ -1,53 +1,63 @@
 import * as React from 'react'
 import Paper from '@mui/material/Paper'
-import Tables from '@mui/material/Table'
+import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
-import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
-import TextField from '@mui/material/TextField'
 import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
+import TablePagination from '@mui/material/TablePagination'
 
-const Table = ({ columns, rows }) => {
+const TableComponent = ({ columns, rows, onDelete, title }) => {
     const [page, setPage] = React.useState(0)
-    const [rowsPerPage, setRowsPerPage] = React.useState(10)
-    const [filterText, setFilterText] = React.useState('')
-    const filteredRows = rows.filter((row) =>
-        columns.some(
-            (column) =>
-                row[column.id]
-                    .toString()
-                    .toLowerCase()
-                    .indexOf(filterText.toLowerCase()) > -1
-        )
-    )
+    const [rowsPerPage, setRowsPerPage] = React.useState(5)
+    const [searchQuery, setSearchQuery] = React.useState('')
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
     }
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value)
+        setRowsPerPage(parseInt(event.target.value, 10))
         setPage(0)
     }
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value)
+        setPage(0) // Reset the page when the search query changes
+    }
+
+    const displayedRows = rows
+        .filter((row) =>
+            Object.values(row)
+                .join(' ')
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase())
+        )
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <div className="w-full flex justify-end pr-2">
-                <TextField
-                    label="Search"
-                    value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)}
-                    margin="normal"
-                    id="filled-basic"
-                    variant="filled"
-                    size="small"
-                />
-            </div>
             <TableContainer sx={{ maxHeight: 440 }}>
-                <Tables stickyHeader aria-label="sticky table">
+                <div className="p-4 w-full flex justify-between">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                        {title}
+                    </h1>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        style={{
+                            borderRadius: '0.375rem',
+                            width: 'auto',
+                        }}
+                    />
+                </div>
+                <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
                             {columns.map((column) => (
@@ -62,60 +72,75 @@ const Table = ({ columns, rows }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredRows
-                            .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                            )
-                            .map((row) => {
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={row.code}
-                                    >
-                                        {columns.map((column) => {
-                                            const value = row[column.id]
-                                            if (column.id === 'profile') {
-                                                return (
-                                                    <TableCell
-                                                        key={column.id}
-                                                        align={column.align}
-                                                    >
-                                                        <Avatar
-                                                            alt={value}
-                                                            src={value}
-                                                        />
-                                                    </TableCell>
-                                                )
-                                            } else {
-                                                return (
-                                                    <TableCell
-                                                        key={column.id}
-                                                        align={column.align}
-                                                    >
-                                                        {column.format &&
-                                                        typeof value ===
-                                                            'number'
-                                                            ? column.format(
-                                                                  value
-                                                              )
-                                                            : value}
-                                                    </TableCell>
-                                                )
+                        {displayedRows.map((row) => {
+                            return window.location.pathname === '/dashboard' ? (
+                                <TableRow key={row.Username}>
+                                    <TableCell>
+                                        <Avatar
+                                            alt={row.Username}
+                                            src={row.profilePhoto}
+                                        />
+                                    </TableCell>
+                                    <TableCell>{row.name}</TableCell>
+                                    <TableCell align="center">
+                                        {new Date(row.dob).toLocaleString(
+                                            'en-US'
+                                        )}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {row.Gender}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {row.Username}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {row.routes}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            startIcon={<CloseOutlinedIcon />}
+                                            onClick={() =>
+                                                onDelete(row.clerkId)
                                             }
-                                        })}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                window.location.pathname === '/routes' && (
+                                    <TableRow key={row.routeId}>
+                                        <TableCell>{row.Name}</TableCell>
+                                        <TableCell align="right">
+                                            {row.no_lanes}
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                startIcon={
+                                                    <CloseOutlinedIcon />
+                                                }
+                                                onClick={() =>
+                                                    onDelete(row.routeId)
+                                                }
+                                            >
+                                                Delete
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 )
-                            })}
+                            )
+                        })}
                     </TableBody>
-                </Tables>
+                </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={filteredRows.length}
+                count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -125,4 +150,4 @@ const Table = ({ columns, rows }) => {
     )
 }
 
-export default Table
+export default TableComponent

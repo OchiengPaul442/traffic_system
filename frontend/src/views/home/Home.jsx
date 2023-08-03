@@ -1,320 +1,127 @@
-import React, { useEffect } from 'react'
-import { Table } from '../../components'
+import React, { useEffect, useState } from 'react'
+import { TableComponent, Loader } from '../../components'
 import Page from '../../layout/Page'
 import Button from '@mui/material/Button'
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 import axios from 'axios'
 
 const Home = () => {
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [dob, setDob] = useState('')
+    const [Gender, setGender] = useState('')
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [route, setRoute] = useState('')
+
     const [data, setData] = React.useState([])
     const [loading, setLoading] = React.useState(false)
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const data = {
+            firstName,
+            lastName,
+            dob,
+            Gender,
+            username,
+            password,
+            route,
+        }
+        try {
+            setLoading(true)
+            const res = await axios.post('http://localhost:8081/addClerk', data)
+
+            setFirstName('')
+            setLastName('')
+            setDob('')
+            setGender('')
+            setUsername('')
+            setPassword('')
+            setRoute('')
+
+            setTimeout(() => {
+                setLoading(false)
+            }, 1000)
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleDelete = async (id) => {
+        // alert('Are you sure you want to delete this clerk?', id)
+        try {
+            const res = await axios.delete(
+                `http://localhost:8081/deleteClerk/${id}`
+            )
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+        fetchClerkData()
+    }
+
+    const fetchClerkData = async () => {
+        try {
+            const res = await axios.get('http://localhost:8081/clerks')
+            setData(res.data.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
-        setLoading(true)
-        axios
-            .get('http://localhost:8081/users')
-            .then((res) => {
-                setData(res.data)
-                setLoading(false)
-            })
-            .catch((err) => {
-                console.log(err)
-                setLoading(false)
-            })
+        fetchClerkData()
     }, [])
 
-    console.log('-->', data, loading)
-
     const columns = [
-        { id: 'profile', label: 'PROFILE', minWidth: 170 },
-        { id: 'name', label: 'NAME', minWidth: 100 },
+        { id: 'PROFILE', label: 'PROFILE', minWidth: 170 },
+        { id: 'NAME', label: 'NAME', minWidth: 100 },
         {
             id: 'DOB',
             label: 'DATE OF BIRTH',
             minWidth: 170,
-            align: 'right',
+            align: 'center',
             format: (value) => value.toLocaleString('en-US'),
         },
         {
-            id: 'gender',
+            id: 'GENDER',
             label: 'GENDER',
             minWidth: 170,
             align: 'right',
-            format: (value) => value.toLocaleString('en-US'),
         },
         {
-            id: 'username',
+            id: 'USERNAME',
             label: 'USERNAME',
             minWidth: 170,
             align: 'right',
-            format: (value) => value.toLocaleString('en-US'),
         },
         {
-            id: 'route',
+            id: 'ROUTE',
             label: 'ROUTE',
             minWidth: 170,
             align: 'right',
-            format: (value) => value.toLocaleString('en-US'),
         },
         {
-            id: 'action',
+            id: 'ACTION',
             label: 'ACTION',
             minWidth: 170,
-            align: 'center',
-        },
-    ]
-
-    const rows = [
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name 1',
-            DOB: '01/01/2000',
-            gender: 'Male',
-            username: 'Username1',
-            route: 'Route 1',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name 2',
-            DOB: '02/02/2001',
-            gender: 'Female',
-            username: 'Username2',
-            route: 'Route 2',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name 3',
-            DOB: '03/03/2002',
-            gender: 'Male',
-            username: 'Username3',
-            route: 'Route 3',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name 4',
-            DOB: '04/04/2003',
-            gender: 'Female',
-            username: 'Username4',
-            route: 'Route 4',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name 5',
-            DOB: '05/05/2004',
-            gender: 'Male',
-            username: 'Username5',
-            route: 'Route 5',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name 6',
-            DOB: '06/06/2005',
-            gender: 'Female',
-            username: 'Username6',
-            route: 'Route 6',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name7',
-            DOB: '07/07/2006',
-            gender: 'Male',
-            username: 'Username7',
-            route: 'Route7',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name8',
-            DOB: '08/08/2007',
-            gender: 'Female',
-            username: 'Username8',
-            route: 'Route8',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name9',
-            DOB: '09/09/2008',
-            gender: 'Male',
-            username: 'Username9',
-            route: 'Route9',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name10',
-            DOB: '10/10/2009',
-            gender: 'Female',
-            username: 'Username10',
-            route: 'Route10',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name11',
-            DOB: '11/11/2010',
-            gender: 'Male',
-            username: 'Username11',
-            route: 'Route11',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name12',
-            DOB: '12/12/2011',
-            gender: 'Female',
-            username: 'Username12',
-            route: 'Route12',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name13',
-            DOB: '13/01/2012',
-            gender: 'Male',
-            username: 'Username13',
-            route: 'Route13',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name14',
-            DOB: '14 /02 /2013',
-            gender: 'Female',
-            username: 'Username14',
-            route: 'Route14',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
-        },
-        {
-            profile: 'https://source.unsplash.com/random',
-            name: 'Name15',
-            DOB: '15 /03 /2014',
-            gender: 'Male',
-            username: 'Username15',
-            route: 'Route15',
-            action: (
-                <Button onClick={() => {}} variant="contained" color="error">
-                    <span className="flex items-center text-sm">
-                        <CloseOutlinedIcon className="mr-1 w-1" />
-                        Delete
-                    </span>
-                </Button>
-            ),
+            align: 'right',
         },
     ]
 
     return (
         <Page>
-            <div>
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                    Add Clerk
-                </h1>
+            <div
+                style={{
+                    borderRadius: '10px',
+                }}
+            >
                 <div className="lg:mx-7 mb-4">
-                    <form>
+                    <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                        Add Clerk
+                    </h1>
+                    <form onSubmit={handleSubmit}>
                         <div className="grid gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                             <div>
                                 <label
@@ -324,6 +131,10 @@ const Home = () => {
                                     First name:
                                 </label>
                                 <input
+                                    onChange={(e) => {
+                                        setFirstName(e.target.value)
+                                    }}
+                                    value={firstName}
                                     type="text"
                                     id="first_name"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -339,6 +150,10 @@ const Home = () => {
                                     Last name:
                                 </label>
                                 <input
+                                    onChange={(e) => {
+                                        setLastName(e.target.value)
+                                    }}
+                                    value={lastName}
                                     type="text"
                                     id="last_name"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -354,6 +169,10 @@ const Home = () => {
                                     Gender:
                                 </label>
                                 <select
+                                    onChange={(e) => {
+                                        setGender(e.target.value)
+                                    }}
+                                    value={Gender}
                                     id="gender"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 >
@@ -370,6 +189,10 @@ const Home = () => {
                                     Date Of Birth:
                                 </label>
                                 <input
+                                    onChange={(e) => {
+                                        setDob(e.target.value)
+                                    }}
+                                    value={dob}
                                     type="date"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-1 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="dd/mm/yyyy"
@@ -386,6 +209,10 @@ const Home = () => {
                                     Username:
                                 </label>
                                 <input
+                                    onChange={(e) => {
+                                        setUsername(e.target.value)
+                                    }}
+                                    value={username}
                                     type="text"
                                     id="username"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -401,6 +228,10 @@ const Home = () => {
                                     Password:
                                 </label>
                                 <input
+                                    onChange={(e) => {
+                                        setPassword(e.target.value)
+                                    }}
+                                    value={password}
                                     type="password"
                                     id="pass"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -429,6 +260,10 @@ const Home = () => {
                                     Route:
                                 </label>
                                 <select
+                                    onChange={(e) => {
+                                        setRoute(e.target.value)
+                                    }}
+                                    value={route}
                                     id="route"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 >
@@ -441,19 +276,31 @@ const Home = () => {
                             </div>
                         </div>
                         <div className="w-full">
-                            <Button color="success" variant="contained">
-                                save
+                            <Button
+                                color="success"
+                                type="submit"
+                                variant="contained"
+                            >
+                                {loading ? (
+                                    <div className="pl-2">
+                                        <Loader fill={'blue'} />
+                                    </div>
+                                ) : (
+                                    <span>save</span>
+                                )}
                             </Button>
                         </div>
                     </form>
                 </div>
             </div>
             <div>
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                    Users Info
-                </h1>
-                <div className="lg:mx-7">
-                    <Table columns={columns} rows={rows} />
+                <div className="lg:mx-7 mt-10">
+                    <TableComponent
+                        title="Users Info"
+                        columns={columns}
+                        rows={data && data}
+                        onDelete={(id) => handleDelete(id)}
+                    />
                 </div>
             </div>
         </Page>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Axios from 'axios'
-import { PenIcon, KeyIcon, LockIcon } from '../../components'
+import axios from 'axios'
+import { PenIcon, KeyIcon, LockIcon, Loader } from '../../components'
 
 const Login = () => {
     const [username, setUsername] = useState('')
@@ -14,15 +14,17 @@ const Login = () => {
 
         try {
             setLoading(true)
-            const res = await Axios.post(
-                'http://localhost:5000/api/auth/login',
-                {
-                    username,
-                    password,
-                }
-            )
-            console.log('-->', res)
-            setLoading(false)
+            const res = await axios.post('http://localhost:8081/login', {
+                username,
+                password,
+            })
+            if (res.status === 200) {
+                // localStorage.setItem('userData', JSON.stringify(res.data.user))
+                setTimeout(() => {
+                    window.location.href = '/dashboard'
+                    setLoading(false)
+                }, 1000)
+            }
         } catch (err) {
             console.log(err)
             setLoading(false)
@@ -90,10 +92,18 @@ const Login = () => {
                                 type="submit"
                                 className="text-white flex justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto m-1 px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             >
-                                <span className="mx-1">
-                                    <KeyIcon />
-                                </span>
-                                <span>Login</span>
+                                {loading ? (
+                                    <div className="pl-2">
+                                        <Loader fill={'red'} />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <span className="mx-1">
+                                            <KeyIcon />
+                                        </span>
+                                        <span>Login</span>
+                                    </>
+                                )}
                             </button>
                             <Link
                                 to="/register"
